@@ -8,7 +8,7 @@ FROM Portfolio_Project.dbo.covid_vaccination
 ORDER BY 3,4
 
 
---- slecting the needed datasets
+--- picking useful datasets
 SELECT location, date, total_cases, new_cases, total_deaths, population
 FROM Portfolio_Project.dbo.covid_death
 ORDER BY 1, 2

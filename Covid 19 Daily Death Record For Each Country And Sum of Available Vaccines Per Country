@@ -1,0 +1,19 @@
+SELECT 
+	covid_d.location, covid_d.date, 
+	covid_d.total_cases, covid_d.total_deaths,
+	covid_d.total_deaths - COALESCE(LAG(covid_d.total_deaths) OVER 
+	(PARTITION BY covid_d.location ORDER BY covid_d.date), 0) AS daily_death_record,
+	new_vaccinations,
+ --cast
+	SUM(COALESCE (CAST (new_vaccinations AS numeric), 0))
+	OVER (PARTITION BY covid_d.location ORDER BY covid_d.date) AS vacc_sum
+FROM 
+	Portfolio_Project..covid_death AS covid_d
+INNER JOIN
+	Portfolio_Project..covid_vaccination AS covid_v
+ON
+	covid_d.location = covid_v.location
+AND 
+	covid_d.date = covid_v.date
+WHERE covid_d.continent IS NOT NULL
+ORDER BY 1

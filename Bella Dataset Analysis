@@ -1,0 +1,30 @@
+SELECT
+  DISTINCT
+   a.Id AS id, a.ActivityDate AS activity_date,
+   b.Sleep_day AS sleep_day, b.Total_Sleep_Records AS total_sleep,
+    b.Total_Time_InBed AS time_in_bed, b.Total_Minutes_Asleep AS minutes_asleep,
+  CASE
+  WHEN b.Total_Sleep_Records = 1 THEN "low"
+  WHEN b.Total_Sleep_Records = 2 THEN "average"
+  WHEN b.Total_Sleep_Records = 3 THEN "high"
+END AS sleep_record, EXTRACT(DATE FROM b.Sleep_day) AS date
+
+FROM
+`sampling123.bella_data_case_2.daily_activity` AS a
+FULL OUTER JOIN
+`sampling123.bella_data_case_2.sleep_day` AS b
+ON 
+a.Id = b.Id
+
+WHERE
+  a.Id IS NOT NULL
+  AND a.ActivityDate IS NOT NULL
+  AND b.Sleep_Day IS NOT NULL
+  AND b.Total_Minutes_Asleep IS NOT NULL
+  AND b.Total_Sleep_Records IS NOT NULL
+  AND b.Total_Time_InBed IS NOT NULL
+
+GROUP BY 
+  a.Id, b.Sleep_Day, a.ActivityDate, 
+  b.Total_Sleep_Records, b.Total_Time_InBed,
+  b.Total_Minutes_Asleep
